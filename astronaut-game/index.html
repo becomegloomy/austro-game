@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Одень космонавта</title>
+    <link rel="icon" type="image/png" href="images/icon-astronaut.png">
+    
+    <link rel="stylesheet" href="../common/common.css">
+    
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/game-ui.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="../common/common.js" defer></script>
+    
+    <script src="js/game-state.js" defer></script>
+    <script src="js/game-ui.js" defer></script>
+    <script src="js/game-logic.js" defer></script>
+    <script src="js/drag-drop.js" defer></script>
+</head>
+<body>
+    <button class="back-to-menu-btn" id="backToMenuBtn" title="Вернуться в меню">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+
+    <div class="game-container">
+        <div class="main-layout">
+            <div class="dressing-area">
+                <div class="astronaut-display">
+                    <div class="layers-container">
+                        <img id="layer-backpack" class="layer" src="images/backpack.png" alt="Ранцевая система">
+                        <img id="layer-body" class="layer" src="images/body.png" alt="Тело космонавта">
+                        <img id="layer-suit" class="layer" src="images/suit.png" alt="Скафандр">
+                        <img id="layer-belt" class="layer" src="images/belt.png" alt="Крепежный ремень">
+                        <img id="layer-pnevma" class="layer" src="images/pnevma.png" alt="Пневмосистема">
+                        <img id="layer-water" class="layer" src="images/water.png" alt="Система водообеспечения">
+                        <img id="layer-panel" class="layer" src="images/panel.png" alt="Панель управления">
+                        <img id="layer-helmet" class="layer" src="images/helmet.png" alt="Шлем">
+                        <img id="layer-lights" class="layer" src="images/lights.png" alt="Освещение">
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <header class="game-header">
+                    <div class="header-content">
+                        <h1><i class="fas fa-user-astronaut"></i> ОДЕНЬ КОСМОНАВТА</h1>
+                        <p class="subtitle">Собери полный космический скафандр для выхода в открытый космос</p>
+                    </div>
+                </header>
+
+                <div class="inventory-area">
+                    <h2><i class="fas fa-suitcase"></i> ЭЛЕМЕНТЫ СКАФАНДРА</h2>
+                    <div class="elements-grid"></div>
+                    
+                    <div class="info-panel">
+                        <h3><i class="fas fa-info-circle"></i> ИНТЕРЕСНЫЙ ФАКТ</h3>
+                        <div class="info-content">
+                            <div id="element-info">
+                                <div class="element-description">
+                                    <strong>Выберите элемент</strong><br>
+                                    Нажмите на элемент справа, чтобы узнать о нем подробнее
+                                </div>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-label">
+                                    <span>Прогресс сборки:</span>
+                                    <span id="progress-text">0/8</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div id="progress-fill" class="progress-fill"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="completion-message hidden">
+        <h2>
+            <i class="fas fa-check-circle"></i> 
+            СКАФАНДР СОБРАН!
+        </h2>
+        <p>Космонавт готов к выходу в открытый космос</p>
+        <div class="completion-buttons">
+            <button id="reset-game-btn" class="reset-btn">
+                <i class="fas fa-redo-alt"></i> 
+                Начать заново
+            </button>
+            <button id="backToMenuFromComplete" class="reset-btn back-to-menu-btn-complete">
+                <i class="fas fa-arrow-left"></i> 
+                Назад в меню
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>

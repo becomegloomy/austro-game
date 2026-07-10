@@ -1,0 +1,631 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: radial-gradient(circle at 20% 30%, #030318, #000000);
+    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: calc(20px * var(--scale));
+}
+
+.game-container {
+    background: rgba(5, 10, 30, 0.5);
+    backdrop-filter: blur(4px);
+    border-radius: calc(48px * var(--scale));
+    padding: calc(20px * var(--scale));
+    border: 1px solid rgba(108, 99, 255, 0.3);
+    width: 100%;
+    height: calc(100vh - 40px * var(--scale));
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-layout {
+    display: flex;
+    gap: clamp(12px, calc(30px * var(--scale)), 60px);
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.space-scene {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: calc(32px * var(--scale));
+    padding: calc(12px * var(--scale));
+    border: 1px solid rgba(108, 99, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: cardFadeUp 0.4s ease-out backwards;  
+}
+
+#satelliteCanvas, #previewCanvas {
+    position: absolute;
+    top: calc(12px * var(--scale));
+    left: calc(12px * var(--scale));
+    width: calc(100% - 24px * var(--scale));
+    height: calc(100% - 24px * var(--scale));
+    border-radius: calc(24px * var(--scale));
+    background: transparent;
+    display: block;
+}
+
+#satelliteCanvas {
+    z-index: 1;
+    background: #010014;
+    box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.2), 0 calc(10px * var(--scale)) calc(25px * var(--scale)) rgba(0,0,0,0.4);
+}
+
+#previewCanvas {
+    z-index: 2;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    opacity: 1;
+}
+
+.right-panel {
+    flex: 1.0;
+    min-width: 270px;
+    display: flex;
+    flex-direction: column;
+    gap: calc(24px * var(--scale));
+    overflow-y: auto;
+    overflow-x: hidden;
+    justify-content: flex-start;
+}
+
+.right-panel > * {
+    flex-shrink: 0;
+}
+.right-panel > .info-panel {
+    flex-shrink: 1;
+    min-height: 0;
+}
+
+.game-header {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: calc(20px * var(--scale));
+    padding: calc(15px * var(--scale)) calc(20px * var(--scale));
+    border: 1px solid rgba(108, 99, 255, 0.3);
+    backdrop-filter: blur(10px);
+    text-align: center;
+    flex-shrink: 0;
+    animation: cardFadeUp 0.4s ease-out backwards;
+}
+
+.game-header h1 {
+    color: var(--cosmic-purple);
+    font-size: clamp(1.3rem, calc(1.8rem * var(--scale)), 2.4rem);
+    text-shadow: 0 0 10px rgba(108, 99, 255, 0.5);
+    margin-bottom: calc(6px * var(--scale));
+}
+
+.subtitle {
+    color: var(--moon-gray);
+    font-size: clamp(1rem, calc(1.2rem * var(--scale)), 1.6rem);
+    opacity: 0.9;
+}
+
+.mission-panel {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: calc(24px * var(--scale));
+    padding: calc(22px * var(--scale));
+    border: 1px solid rgba(255, 154, 60, 0.3);
+    flex-shrink: 0;
+    animation: fadeInUp 0.6s ease-out backwards;
+}
+
+.mission-panel h2 {
+    color: var(--planet-orange);
+    font-size: clamp(1.3rem, calc(1.7rem * var(--scale)), 2.2rem);
+    margin-bottom: calc(20px * var(--scale));
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: calc(10px * var(--scale));
+}
+
+.missions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: calc(16px * var(--scale)); 
+    margin-bottom: calc(22px * var(--scale));
+}
+
+.btn-mission {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    border: 1px solid #ffaa77;
+    border-radius: calc(60px * var(--scale));
+    font-family: inherit;
+    font-weight: bold;
+    font-size: clamp(0.95rem, calc(1.1rem * var(--scale)), 1.4rem);
+    padding: calc(14px * var(--scale)) calc(12px * var(--scale));
+    color: var(--star-white);
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: 0.2s ease;
+    text-align: center;
+    box-shadow: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.btn-mission:hover {
+    transform: translateY(calc(-2px * var(--scale)));
+    background: rgba(255, 170, 119, 0.2);
+    border-color: #ffcc99;
+    color: white;
+    text-shadow: 0 0 3px #ffaa77;
+}
+
+.btn-mission:active {
+    transform: translateY(calc(2px * var(--scale)));
+}
+
+.btn-mission:disabled {
+    opacity: 0.4;
+    transform: none;
+    cursor: not-allowed;
+    filter: grayscale(0.2);
+}
+
+.btn-next {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #44ff88;
+    color: #ccffcc;
+    width: 100%;
+    margin-top: calc(5px * var(--scale));
+    box-shadow: none;
+    font-size: clamp(0.95rem, calc(1.1rem * var(--scale)), 1.4rem);
+    padding: calc(14px * var(--scale)) calc(12px * var(--scale));
+}
+
+.btn-next:disabled {
+    opacity: 0.4;
+    border-color: #44ff88;
+    color: #88ffaa;
+    box-shadow: none;
+}
+
+.btn-next:not(:disabled):hover {
+    background: rgba(68, 255, 136, 0.2);
+    transform: translateY(calc(-2px * var(--scale)));
+    box-shadow: 0 0 12px #44ff88;
+    border-color: #aaffcc;
+}
+
+.btn-next:not(:disabled) {
+    text-shadow: 0 0 5px #44ff88;
+    box-shadow: 0 0 8px #44ff88;
+}
+
+.btn-reset {
+    background: linear-gradient(145deg, #2a2a3a, #11111f);
+    border: 1px solid #ffaa66;
+    color: #ffe6c0;
+    width: 100%;
+    margin-top: calc(10px * var(--scale));
+    box-shadow: none;
+    font-size: clamp(0.95rem, calc(1.1rem * var(--scale)), 1.4rem);
+    padding: calc(14px * var(--scale)) calc(12px * var(--scale));
+}
+
+.info-panel {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: calc(20px * var(--scale));
+    padding: calc(28px * var(--scale));
+    border: 2px solid rgba(52, 152, 219, 0.3);
+    flex-shrink: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    animation: fadeInUp 0.6s ease-out backwards;
+}
+
+.info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: calc(12px * var(--scale));
+    flex-wrap: wrap;
+    gap: calc(8px * var(--scale));
+}
+
+.info-panel h3 {
+    color: var(--info-blue);
+    font-size: clamp(1.1rem, calc(1.4rem * var(--scale)), 1.7rem);
+    margin-bottom: calc(16px * var(--scale));
+    display: inline-flex;
+    align-items: center;
+    gap: calc(6px * var(--scale));
+    margin: 0;
+}
+
+.hint-button {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--info-blue);
+    color: var(--star-white);
+    border-radius: calc(40px * var(--scale));
+    padding: calc(8px * var(--scale)) calc(16px * var(--scale));
+    font-size: clamp(0.9rem, calc(1.1rem * var(--scale)), 1.3rem);
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    gap: calc(5px * var(--scale));
+    white-space: nowrap;
+}
+
+.hint-button:hover:not(:disabled) {
+    background: rgba(52, 152, 219, 0.3);
+    transform: scale(1.02);
+    border-color: #88ccff;
+}
+
+.hint-button:active {
+    transform: scale(0.98);
+}
+
+.hint-button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    filter: grayscale(0.2);
+}
+
+.fact-text {
+    font-size: clamp(0.95rem, calc(1.1rem * var(--scale)), 1.4rem);
+    padding: calc(18px * var(--scale));
+    margin-bottom: calc(24px * var(--scale));    
+    line-height: 1.5;
+    color: var(--moon-gray);
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: calc(16px * var(--scale));
+    border-left: 4px solid var(--cosmic-purple);
+    transition: all 0.3s ease;
+    overflow-wrap: break-word;
+}
+
+.fact-text .main-text {
+    display: block;
+    margin-bottom: calc(12px * var(--scale));
+    font-size: inherit;
+}
+
+.fact-text .hint {
+    display: block;
+    margin-top: 0;
+    font-size: inherit;
+    opacity: 0.9;
+    font-style: italic;
+}
+
+.fact-text.error {
+    background: rgba(231, 76, 60, 0.2);
+    border-left-color: var(--error-red);
+    color: #ffaaaa;
+}
+
+.fact-text.success {
+    background: rgba(46, 204, 113, 0.2);
+    border-left-color: var(--success-green);
+    color: #aaffcc;
+    font-size: clamp(1.0rem, calc(1.3rem * var(--scale)), 1.5rem);
+}
+.fact-text.success .hint {
+    font-size: inherit;
+}
+
+.progress-stars {
+    display: flex;
+    justify-content: center;
+    gap: calc(14px * var(--scale));
+    padding: calc(14px * var(--scale));
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: calc(40px * var(--scale));
+    flex-wrap: wrap;
+    margin-top: auto;
+}
+
+.star-icon {
+    font-size: clamp(1.4rem, calc(1.7rem * var(--scale)), 2.2rem);
+    color: #555;
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 0 2px #000);
+}
+
+.star-icon.completed {
+    color: #ffd700;
+    text-shadow: 0 0 8px #ffaa33;
+}
+
+.completion-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(6px);
+    z-index: 9999;
+}
+
+.completion-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background: linear-gradient(135deg, rgba(10, 17, 40, 0.98), rgba(26, 35, 126, 0.98));
+    padding: clamp(30px, calc(50px * var(--scale)), 70px);
+    border-radius: calc(40px * var(--scale));
+    border: 3px solid var(--success-green);
+    z-index: 10000;
+    max-width: calc(750px * var(--scale));
+    width: 90%;
+    box-shadow: 0 0 50px rgba(46, 204, 113, 0.4);
+    backdrop-filter: blur(10px);
+    animation: celebration 0.5s ease-out;
+}
+
+.completion-message h2 {
+    color: var(--success-green);
+    font-size: clamp(1.8rem, calc(2.8rem * var(--scale)), 3.5rem);
+    margin-bottom: calc(20px * var(--scale));
+    text-shadow: 0 0 20px rgba(46, 204, 113, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: calc(15px * var(--scale));
+}
+
+.completion-message p {
+    font-size: clamp(1.2rem, calc(1.5rem * var(--scale)), 1.8rem);
+    margin-bottom: calc(25px * var(--scale));
+    color: var(--star-white);
+    line-height: 1.4;
+}
+
+.completion-stars {
+    display: flex;
+    justify-content: center;
+    gap: calc(20px * var(--scale));
+    margin: calc(25px * var(--scale)) 0;
+    font-size: clamp(2rem, calc(2.5rem * var(--scale)), 3rem);
+    color: #ffd700;
+    text-shadow: 0 0 8px #ffaa33;
+}
+
+.completion-stars i {
+    animation: starPulse 0.5s ease-out;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.back-to-menu-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 10000;
+    background: rgba(108, 99, 255, 0.3);
+    backdrop-filter: blur(8px);
+    border: 2px solid rgba(108, 99, 255, 0.6);
+    color: white;
+    font-size: 1.5rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.back-to-menu-btn:hover {
+    background: var(--cosmic-purple);
+    transform: scale(1.05);
+    border-color: white;
+}
+
+.completion-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin-top: 35px;
+    flex-wrap: wrap;
+}
+
+.completion-buttons button {
+    min-width: 280px;
+    width: auto;
+    padding: 18px 20px;
+    font-size: 1.1rem;
+    border-radius: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    color: white;
+}
+
+.completion-reset-btn {
+    background: rgba(46, 204, 113, 0.85);
+    border: 2px solid var(--success-green);
+    box-shadow: 0 0 8px rgba(46, 204, 113, 0.4);
+}
+.completion-reset-btn:hover {
+    background: var(--success-green);
+    transform: scale(1.02);
+    box-shadow: 0 0 15px rgba(46, 204, 113, 0.8);
+}
+
+.back-to-menu-complete {
+    background: var(--cosmic-purple);
+    border: 2px solid rgba(108, 99, 255, 0.6);
+    box-shadow: 0 0 8px rgba(108, 99, 255, 0.4);
+}
+.back-to-menu-complete:hover {
+    background: #5a52d5;
+    transform: scale(1.02);
+    box-shadow: 0 0 15px rgba(108, 99, 255, 0.8);
+}
+
+@keyframes cardFadeUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (min-width: 1200px) and (max-height: 800px) {
+    .main-layout {
+        gap: calc(15px * var(--scale));
+    }
+    .space-scene {
+        flex: 0.9;
+    }
+    .right-panel {
+        flex: 1.1;
+        gap: calc(12px * var(--scale));
+    }
+    .mission-panel {
+        padding: calc(12px * var(--scale));
+    }
+    .mission-panel h2 {
+        margin-bottom: calc(10px * var(--scale));
+        font-size: clamp(1.1rem, calc(1.3rem * var(--scale)), 1.5rem);
+    }
+    .missions-grid {
+        gap: calc(8px * var(--scale));
+        margin-bottom: calc(12px * var(--scale));
+    }
+    .btn-mission, .btn-next, .btn-reset {
+        padding: calc(8px * var(--scale)) calc(6px * var(--scale));
+        font-size: clamp(0.75rem, calc(0.85rem * var(--scale)), 0.95rem);
+        white-space: normal;
+        word-break: break-word;
+    }
+    .game-header {
+        padding: calc(8px * var(--scale)) calc(12px * var(--scale));
+    }
+    .game-header h1 {
+        font-size: clamp(1.1rem, calc(1.4rem * var(--scale)), 1.6rem);
+        margin-bottom: calc(2px * var(--scale));
+    }
+    .subtitle {
+        font-size: clamp(0.85rem, calc(1rem * var(--scale)), 1.1rem);
+    }
+    .info-panel {
+        padding: calc(12px * var(--scale));
+    }
+    .info-header {
+        margin-bottom: calc(6px * var(--scale));
+    }
+    .info-panel h3 {
+        font-size: clamp(0.9rem, calc(1rem * var(--scale)), 1.1rem);
+        margin-bottom: calc(8px * var(--scale));
+    }
+    .hint-button {
+        padding: calc(4px * var(--scale)) calc(10px * var(--scale));
+        font-size: clamp(0.7rem, calc(0.8rem * var(--scale)), 0.9rem);
+    }
+    .fact-text {
+        padding: calc(10px * var(--scale));
+        font-size: clamp(0.9rem, calc(0.95rem * var(--scale)), 1.05rem);
+        margin-bottom: calc(12px * var(--scale));
+    }
+    .fact-text.success {
+        font-size: clamp(0.9rem, calc(1.1rem * var(--scale)), 1.2rem);
+    }
+    .fact-text .main-text {
+        margin-bottom: calc(5px * var(--scale)) !important;
+    }
+    .progress-stars {
+        gap: calc(10px * var(--scale));
+        padding: calc(10px * var(--scale));
+        margin-top: 0;
+    }
+    .star-icon {
+        font-size: clamp(1rem, calc(1.3rem * var(--scale)), 1.5rem);
+    }
+    .completion-message {
+        max-width: 650px !important;
+        width: 80% !important;
+    }
+    .completion-buttons button {
+        min-width: 260px !important;
+    }
+}
+
+@media (min-width: 1280px) and (max-width: 1599px) and (min-height: 600px) {
+    .space-scene {
+        flex: 0.98;
+    }
+    .right-panel {
+        flex: 1.02;
+        gap: calc(16px * var(--scale));
+    }
+    .game-header h1 {
+        font-size: clamp(1.1rem, calc(1.4rem * var(--scale)), 1.8rem);
+    }
+    .subtitle {
+        font-size: clamp(0.9rem, calc(1.05rem * var(--scale)), 1.25rem);
+    }
+    .mission-panel h2 {
+        font-size: clamp(1.05rem, calc(1.35rem * var(--scale)), 1.7rem);
+        margin-bottom: calc(12px * var(--scale));
+    }
+    .missions-grid {
+        gap: calc(12px * var(--scale));
+        margin-bottom: calc(16px * var(--scale));
+    }
+    .btn-mission {
+        font-size: clamp(0.85rem, calc(1.05rem * var(--scale)), 1.2rem);
+        padding: calc(13px * var(--scale)) calc(10px * var(--scale));
+        white-space: normal;
+        word-break: break-word;
+    }
+    .btn-next, .btn-reset {
+        font-size: clamp(0.85rem, calc(1.05rem * var(--scale)), 1.2rem);
+        padding: calc(13px * var(--scale)) calc(10px * var(--scale));
+    }
+    .info-panel h3 {
+        font-size: clamp(1rem, calc(1.2rem * var(--scale)), 1.5rem);
+    }
+    .hint-button {
+        font-size: clamp(0.8rem, calc(0.95rem * var(--scale)), 1.1rem);
+        padding: calc(6px * var(--scale)) calc(14px * var(--scale));
+    }
+    .fact-text {
+        font-size: clamp(0.9rem, calc(1.05rem * var(--scale)), 1.25rem);
+        padding: calc(16px * var(--scale));
+        margin-bottom: calc(14px * var(--scale));
+        line-height: 1.55;
+    }
+    .star-icon {
+        font-size: clamp(1.3rem, calc(1.6rem * var(--scale)), 1.9rem);
+    }
+    .progress-stars {
+        gap: calc(10px * var(--scale));
+        padding: calc(10px * var(--scale));
+    }
+}

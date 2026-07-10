@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Запусти ракету</title>
+    <link rel="icon" type="image/png" href="images/icon-rock.png">
+    
+    <link rel="stylesheet" href="../common/common.css">
+    
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/game-ui.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="../common/common.js" defer></script>
+    
+    <script src="js/game-state.js" defer></script>
+    <script src="js/game-ui.js" defer></script>
+    <script src="js/game-logic.js" defer></script>
+    <script src="js/drag-drop.js" defer></script>
+</head>
+<body>
+<button class="back-to-menu-btn" id="backToMenuBtn" title="Вернуться в меню">
+    <i class="fas fa-arrow-left"></i>
+</button>
+<div class="game-container">
+    <div class="main-layout">
+        <div class="dressing-area">
+            <div class="astronaut-display">
+                <div class="layers-container">
+                    <img id="layer-body" class="layer active" alt="Каркас ракеты">
+                    <img id="layer-central" class="layer" alt="Центральная ступень">
+                    <img id="layer-booster-left-back" class="layer" alt="Левый задний ускоритель">
+                    <img id="layer-booster-left-front" class="layer" alt="Левый передний ускоритель">
+                    <img id="layer-booster-right-back" class="layer" alt="Правый задний ускоритель">
+                    <img id="layer-booster-right-front" class="layer" alt="Правый передний ускоритель">
+                    <img id="layer-spacecraft" class="layer" alt="Космический корабль">
+                    <img id="layer-upperStage" class="layer" alt="Верхняя ступень">
+                    <img id="layer-sasLower" class="layer" alt="Нижняя часть САС">
+                    <img id="layer-sasLower-removable" class="layer" alt="Кожух САС (снимается)">
+                    <img id="layer-sasLower-permanent" class="layer" alt="Переходник САС (остаётся)">
+                    <img id="layer-sasUpper" class="layer" alt="Верхняя часть САС">
+                </div>
+                <div class="exhaust-waves">
+                    <span></span><span></span><span></span><span></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <header class="game-header">
+                <div class="header-content">
+                    <h1><i class="fas fa-rocket"></i> ЗАПУСТИ РАКЕТУ</h1>
+                    <p class="subtitle">Собери ракету-носитель СОЮЗ в правильной последовательности</p>
+                </div>
+            </header>
+
+            <div class="inventory-area">
+                <h2><i class="fas fa-puzzle-piece"></i> ДЕТАЛИ РАКЕТЫ</h2>
+                <div class="elements-grid" id="elements-grid"></div>
+
+                <div class="info-panel">
+                    <h3><i class="fas fa-info-circle"></i> ИНТЕРЕСНЫЙ ФАКТ</h3>
+                    <div class="info-content">
+                        <div id="element-info">
+                            <div class="element-description">
+                                <strong>Выберите деталь</strong><br>
+                                Перетащите на ракету в правильном порядке
+                            </div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Прогресс сборки:</span>
+                                <span id="progress-text">0/6</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div id="progress-fill" class="progress-fill"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="transport-modal" class="modal hidden">
+    <div class="modal-content transport-content" style="max-width: 750px;">
+        <div style="text-align: center;">
+            <img src="images/transport.png" alt="Поезд с ракетой" style="max-width:100%; border-radius:12px;">
+            <h2 style="color:#ff9a3c; margin:20px 0 10px;"><i class="fas fa-train"></i> РАКЕТА СОБРАНА!</h2>
+            <p style="font-size:1.2rem;">Теперь она транспортируется на стартовый стол в горизонтальном положении, что снижает нагрузку на корпус. </p>
+            <button id="transport-next-btn" class="reset-btn" style="margin-top:20px; width: 250px;"><i class="fas fa-arrow-right"></i> ДАЛЕЕ</button>
+        </div>
+    </div>
+</div>
+
+<div id="launch-modal" class="modal hidden">
+    <div class="modal-content launch-content" style="max-width: 750px;">
+        <div style="text-align: center;">
+            <img src="images/launch.png" alt="Запуск ракеты" style="max-width:100%; border-radius:12px;">
+            <h2 style="color:#ff9a3c; margin:20px 0 10px;"><i class="fas fa-space-shuttle"></i> ЗАПУСК РАКЕТЫ</h2>
+            <p style="font-size:1.2rem;">На стартовом столе инженеры провели заправку топливом и финальные проверки всех систем. <br> Обратный отсчёт завершен – двигатели запущены.</p>
+            <button id="launch-close-btn" class="reset-btn" style="margin-top:20px; width: 250px;">ПОЕХАЛИ!</button>
+        </div>
+    </div>
+</div>
+
+<div id="final-modal" class="modal hidden">
+    <div class="modal-content final-content">
+        <div style="text-align: center;">
+            <h2 style="color:#2ecc71; margin:20px 0 10px;">
+                <i class="fas fa-check-circle" style="margin-right: 12px;"></i> МИССИЯ ЗАВЕРШЕНА!
+            </h2>
+            <p style="font-size:1.2rem;">Ты провёл ракету-носитель СОЮЗ через все этапы: от сборки до полёта!</p>
+            <div class="completion-buttons">
+                <button id="final-reset-btn" class="reset-btn final-reset-btn">
+                    <i class="fas fa-redo-alt"></i> Начать заново
+                </button>
+                <button id="backToMenuFromComplete" class="reset-btn back-to-menu-complete">
+                    <i class="fas fa-arrow-left"></i> Назад в меню
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

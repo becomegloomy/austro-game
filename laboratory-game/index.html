@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Космическая викторина</title>
+    <link rel="icon" type="image/png" href="icon-brain.png">
+    
+    <link rel="stylesheet" href="../common/common.css">
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="../common/common.js" defer></script>
+    
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <div class="stars-container" id="starsContainer"></div>
+
+    <button class="back-btn hidden" id="backBtn">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+
+    <div class="level-selector" id="levelSelector">
+        <button class="back-to-menu-arrow" id="backArrowLevel" title="Главное меню">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <div class="level-card">
+            <h2><i class="fas fa-graduation-cap"></i> <span>ВЫБЕРИ УРОВЕНЬ СЛОЖНОСТИ</span></h2>
+            <div class="level-buttons">
+                <button class="level-btn" data-level="junior">НОВИЧОК</button>
+                <button class="level-btn" data-level="middle">ИСПЫТАТЕЛЬ</button>
+                <button class="level-btn" data-level="senior">КАПИТАН</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="game-wrapper hidden" id="gameWrapper">
+        <div class="header">
+            <div class="level-badge" id="levelBadge">УРОВЕНЬ: —</div>
+            <h1>❓ КОСМИЧЕСКАЯ ВИКТОРИНА</h1>
+        </div>
+
+        <div class="stats">
+            <div class="question-counter">ВОПРОС <span id="currentQ">1</span> / <span id="totalQ">5</span></div>
+            <div class="score">ПРАВИЛЬНЫХ ОТВЕТОВ: <span id="scoreValue">0</span></div>
+        </div>
+
+        <div class="quiz-layout" id="quizLayout">
+            <div class="image-panel">
+                <div class="question-image" id="questionImage">🚀</div>
+            </div>
+            <div class="quiz-panel">
+                <div id="gameArea">
+                    <div class="question-card">
+                        <div class="question-text" id="questionText">Загрузка...</div>
+                    </div>
+                    <div class="options-area" id="optionsContainer"></div>
+                    <div class="feedback-area" id="feedbackArea">
+                        <div class="fact-box" id="factBox">
+                            ❓ Выбери вариант ответа
+                        </div>
+                    </div>
+                    <button class="next-btn" id="nextButton" disabled>ДАЛЕЕ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="completion-overlay hidden" id="completionOverlay"></div>
+    <div class="completion-message hidden" id="completionMessage">
+        <h2><i class="fas fa-trophy"></i> ВИКТОРИНА ПРОЙДЕНА!</h2>
+        <div class="completion-label">Правильных ответов:</div>
+        <div class="completion-score" id="completionScore">0 / 5</div>
+        <div class="completion-buttons">
+            <button id="completionRestartBtn" class="completion-reset-btn"><i class="fas fa-redo-alt"></i> НАЧАТЬ СНАЧАЛА</button>
+            <button id="completionLevelsBtn" class="completion-levels-btn"><i class="fas fa-list-ul"></i> ВЫБОР УРОВНЯ</button>
+        </div>
+        <div style="margin-top: 0.8rem; text-align: center;">
+            <button id="backToMainMenuFromComplete" class="completion-levels-btn"><i class="fas fa-arrow-left"></i> НАЗАД В МЕНЮ</button>
+        </div>
+    </div>
+
+</body>
+</html>

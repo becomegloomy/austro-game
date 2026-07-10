@@ -1,0 +1,1280 @@
+:root {
+    --ui-scale: 1;
+    --scale: var(--ui-scale);
+    --card-scale: clamp(0.82, var(--scale), 1.35);
+    --w: clamp(135px, calc(190px * var(--scale)), 260px);
+    --h: clamp(180px, calc(235px * var(--scale)), 300px);
+    --img: clamp(108px, calc(150px * var(--scale)), 205px);
+    --gap: clamp(8px, calc(15px * var(--scale)), 24px);
+    --info-h: clamp(100px, calc(130px * var(--scale)), 175px);
+    --progress-h: clamp(8px, calc(12px * var(--scale)), 16px);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0a1128 0%, #1a237e 100%);
+    color: var(--star-white);
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.game-container {
+    height: 100vh;
+    width: 100%;
+    padding: clamp(10px, 2vw, 30px);
+}
+
+.main-layout {
+    display: flex;
+    gap: clamp(12px, 2vw, 30px);
+    height: calc(100vh - clamp(20px, 4vw, 60px));
+    width: 100%;
+    max-width: 100%;
+}
+
+.dressing-area {
+    flex: 0.4;
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: clamp(10px, 1vw, 15px);
+    padding: clamp(8px, 1vw, 12px);
+    border: 2px solid rgba(108, 99, 255, 0.2);
+    height: 100%;
+    overflow: hidden;
+    min-width: 0;
+    max-width: 40%;
+}
+
+.astronaut-display {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(circle at 20% 50%, rgba(108, 99, 255, 0.1) 0%, transparent 50%);
+    height: 100%;
+    padding: 10px;
+}
+
+.layers-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.layer {
+    position: absolute;
+    height: 100%;
+    width: auto;
+    max-height: 95%;
+    max-width: 95%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+    display: none;
+    transform-origin: center center;
+    pointer-events: visiblePainted;
+}
+
+.layer.active {
+    display: block;
+}
+
+.right-panel {
+    flex: 0.6;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(12px, 1.4vw, 20px);
+    height: 100%;
+    min-width: 0;
+    width: 100%;
+    max-width: 60%;
+}
+.right-panel.disassembly-mode {
+    gap: 0 !important;
+}
+
+.right-panel.disassembly-mode .inventory-area {
+    margin-top: 0 !important;
+}
+
+.right-panel.disassembly-mode .game-header {
+    margin-bottom: 0 !important;
+}
+
+.game-header {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: clamp(10px, 1vw, 12px);
+    padding: clamp(10px, 1vw, 15px) clamp(12px, 1.6vw, 25px);
+    border: 1px solid rgba(108, 99, 255, 0.3);
+    backdrop-filter: blur(10px);
+    flex-shrink: 0;
+}
+
+.header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 5px;
+}
+
+.game-header h1 {
+    color: var(--cosmic-purple);
+    font-size: clamp(1.35rem, calc(2.2rem * var(--scale)), 2.5rem);
+    margin-bottom: 5px;
+    text-shadow: 0 0 10px rgba(108, 99, 255, 0.5);
+    line-height: 1.2;
+}
+
+.subtitle {
+    color: var(--moon-gray);
+    font-size: clamp(0.96rem, calc(1.28rem * var(--scale)), 1.55rem);
+    opacity: 0.9;
+    line-height: 1.3;
+}
+
+.inventory-area {
+    flex: 0.999;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    overflow: hidden;
+    min-height: 0;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    transition: flex 0.3s ease-out, gap 0.3s ease-out;
+}
+.inventory-area.disassembly-mode {
+    gap: 8px !important;
+    margin-top: 0 !important;;
+}
+
+.inventory-area h2 {
+    color: var(--planet-orange);
+    font-size: clamp(1.3rem, calc(2.1rem * var(--scale)), 2.4rem);
+    text-align: center;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+    width: 100%;
+    max-height: 100px;
+    overflow: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease, max-height 0.4s ease, margin-bottom 0.4s ease;
+}
+.inventory-area h2.disassembly-hidden {
+    opacity: 0;
+    visibility: hidden;
+    max-height: 0;
+    margin-bottom: 0;
+}
+
+.elements-grid {
+    display: grid;
+    grid-template-columns: repeat(6, var(--w));
+    gap: var(--gap);
+    padding: var(--gap);
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: clamp(8px, 0.8vw, 10px);
+    border: 1px solid rgba(108, 99, 255, 0.1);
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    max-width: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: var(--cosmic-purple) rgba(255, 255, 255, 0.1);
+    grid-auto-columns: var(--w);
+    grid-auto-flow: column;
+    align-items: stretch;
+}
+
+.elements-grid::-webkit-scrollbar {
+    height: 8px;
+}
+.elements-grid::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+.elements-grid::-webkit-scrollbar-thumb {
+    background: var(--cosmic-purple);
+    border-radius: 4px;
+}
+.elements-grid.assembly-mode {
+    opacity: 1;
+    visibility: visible;
+    display: grid;
+}
+.elements-grid.disassembly-mode {
+    opacity: 0;
+    visibility: hidden;
+    flex: 0;
+    min-height: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    gap: 0;
+}
+
+.element-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: clamp(8px, 1vw, 10px);
+    padding: clamp(8px, calc(20px * var(--scale)), 20px);
+    cursor: grab;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: var(--w);
+    min-width: var(--w);
+    max-width: var(--w);
+    height: 100%;
+    min-height: var(--h);
+    position: relative;
+    user-select: none;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+.element-item.dragging {
+    opacity: 0.7;
+    border: 2px solid white !important;
+    background: rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.9);
+    cursor: grabbing;
+    transform: scale(1.02);
+}
+.element-item:hover {
+    transform: translateY(-3px);
+}
+.element-item.available {
+    border-color: var(--planet-orange) !important;
+    border-width: 2px;
+    border-style: solid;
+    box-shadow: 0 0 10px rgba(255, 154, 60, 0.3);
+}
+.element-item.dressed {
+    opacity: 0.7;
+    cursor: default;
+    border-color: var(--success-green) !important;
+    border-width: 2px;
+    border-style: solid;
+    box-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
+    background: rgba(46, 204, 113, 0.1) !important;
+}
+.element-item:not(.available):not(.dressed) {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(0.7);
+    border-color: transparent !important;
+}
+.element-item.required-highlight {
+    animation: pulse-red 0.5s infinite;
+    border-color: var(--error-red) !important;
+    border-width: 2px;
+    border-style: solid;
+    background: rgba(231, 76, 60, 0.1) !important;
+    box-shadow: 0 0 15px rgba(231, 76, 60, 0.5);
+}
+.element-img {
+    width: var(--img);
+    height: var(--img);
+    object-fit: contain;
+    pointer-events: none;
+    transition: transform 0.2s ease;
+    align-self: center;
+}
+
+.element-item[data-id="central"] .element-img {
+    transform: scale(calc(4.5 * var(--card-scale)));
+    margin: calc(-330px * var(--card-scale)) 0 calc(-100px * var(--card-scale)) 0;
+}
+.element-item[data-id="boostersLeft"] .element-img {
+    transform: scale(calc(5.0 * var(--card-scale)));
+    margin: calc(-240px * var(--card-scale)) 0 calc(100px * var(--card-scale)) calc(45px * var(--card-scale));
+}
+.element-item[data-id="boostersRight"] .element-img {
+    transform: scale(calc(5.0 * var(--card-scale)));
+    margin: calc(-240px * var(--card-scale)) 0 calc(100px * var(--card-scale)) calc(-45px * var(--card-scale));
+}
+.element-item[data-id="upperStage"] .element-img {
+    transform: scale(calc(9.0 * var(--card-scale)));
+    margin: calc(260px * var(--card-scale)) 0 calc(-100px * var(--card-scale)) 0;
+}
+.element-item[data-id="sasLower"] .element-img {
+    transform: scale(calc(9.0 * var(--card-scale)));
+    margin: calc(420px * var(--card-scale)) 0 calc(-280px * var(--card-scale)) 0;
+}
+.element-item[data-id="sasUpper"] .element-img {
+    transform: scale(calc(11.0 * var(--card-scale)));
+    margin: calc(740px * var(--card-scale)) 0 calc(-540px * var(--card-scale)) 0;
+}
+.element-name {
+    display: none;
+}
+
+.drag-image {
+    position: fixed;
+    z-index: 10000;
+    pointer-events: none;
+    opacity: 0;
+    filter: drop-shadow(0 5px 20px rgba(0, 0, 0, 0.9));
+    object-fit: contain;
+    will-change: transform, opacity;
+}
+.drag-image.visible {
+    opacity: 0.95;
+    transition: opacity 0.15s ease;
+}
+.drag-image[alt="central"].visible {
+    transform: translate(0px, -130px);
+}
+.drag-image[alt="boostersLeft"].visible {
+    transform: translate(20px, -170px);
+}
+.drag-image[alt="boostersRight"].visible {
+    transform: translate(-20px, -170px);
+}
+.drag-image[alt="upperStage"].visible {
+    transform: translate(0px, 100px);
+}
+.drag-image[alt="sasLower"].visible {
+    transform: translate(0px, 190px);
+}
+.drag-image[alt="sasUpper"].visible {
+    transform: translate(0px, 230px);
+}
+
+.drop-zone {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    pointer-events: none;
+}
+.drop-zone.active {
+    background: rgba(108, 99, 255, 0.1);
+    border: 2px dashed var(--cosmic-purple);
+    border-radius: 15px;
+}
+.drop-zone.valid {
+    background: rgba(46, 204, 113, 0.1);
+    border: 2px dashed var(--success-green);
+    border-radius: 15px;
+}
+.drop-zone.invalid {
+    background: rgba(231, 76, 60, 0.1);
+    border: 2px dashed var(--error-red);
+    border-radius: 15px;
+}
+
+.info-panel {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: clamp(8px, 1vw, 10px);
+    padding: clamp(10px, calc(16px * var(--scale)), 20px) clamp(10px, calc(22px * var(--scale)), 24px);
+    border: 2px solid rgba(52, 152, 219, 0.3);
+    width: 100%;
+    box-sizing: border-box;
+    flex-basis: 280px;
+}
+.info-panel h3 {
+    color: var(--info-blue);
+    margin-bottom: 10px;
+    font-size: clamp(1.1rem, calc(1.48rem * var(--scale)), 1.75rem);
+}
+.info-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+#element-info {
+    font-size: clamp(1rem, calc(1.3rem * var(--scale)), 1.45rem);
+    line-height: 1.5;
+    min-height: var(--info-h);
+    max-height: var(--info-h);
+    height: var(--info-h);
+    padding: clamp(8px, calc(12px * var(--scale)), 14px) clamp(10px, calc(18px * var(--scale)), 20px);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    overflow-y: auto;
+}
+#element-info.has-error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+}
+.progress-container {
+    background: rgba(255, 255, 255, 0.05);
+    padding: clamp(10px, calc(16px * var(--scale)), 18px) clamp(10px, calc(18px * var(--scale)), 20px);
+    border-radius: 8px;
+    width: 100%;
+    box-sizing: border-box;
+}
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: clamp(0.92rem, calc(1.05rem * var(--scale)), 1.2rem);
+}
+.progress-bar {
+    height: var(--progress-h);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+}
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--cosmic-purple), var(--nebula-pink));
+    width: 0%;
+    transition: width 0.5s ease;
+    border-radius: 5px;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    backdrop-filter: blur(5px);
+}
+.modal.hidden {
+    display: none;
+}
+.modal-content {
+    background: linear-gradient(135deg, #1a237e 0%, #0a1128 100%);
+    padding: clamp(18px, calc(30px * var(--scale)), 32px);
+    border-radius: clamp(10px, 1vw, 15px);
+    max-width: 600px;
+    width: 90%;
+    border: 2px solid var(--cosmic-purple);
+    position: relative;
+    text-align: center;
+}
+.reset-btn {
+    background: #ff9a3c;
+    color: white;
+    border: none;
+    padding: clamp(10px, calc(15px * var(--scale)), 18px) clamp(16px, calc(35px * var(--scale)), 38px);
+    font-size: clamp(0.9rem, calc(1.2rem * var(--scale)), 1.3rem);
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(108, 99, 255, 0.4);
+}
+.reset-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 25px rgba(108, 99, 255, 0.6);
+}
+.element-error {
+    background: rgba(231, 76, 60, 0.1);
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    border-radius: 6px;
+    color: var(--error-red);
+    font-size: 0.95em;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    animation: popError 0.2s ease-out;
+    width: 100%;
+    height: 100%;
+    min-height: inherit;
+    padding: 0 16px;
+    box-sizing: border-box;
+}
+.error-message {
+    font-size: 0.95em;
+    line-height: 1.3;
+    font-weight: 500;
+}
+
+.disassembly-area {
+    margin-top: 15px;
+    flex-shrink: 0;
+    transition: opacity 0.3s ease, visibility 0.3s ease, margin-top 0.3s ease;
+}
+.disassembly-area.assembly-mode {
+    opacity: 0;
+    visibility: hidden;
+    margin-top: 0;
+}
+.disassembly-area.disassembly-mode {
+    opacity: 1;
+    visibility: visible;
+    display: block;
+}
+.disassembly-bin {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px dashed var(--error-red);
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    color: var(--error-red);
+    font-size: 1rem;
+    cursor: default;
+    transition: all 0.2s ease;
+}
+.disassembly-bin i {
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+.disassembly-bin.drag-over {
+    background: rgba(231, 76, 60, 0.2);
+    border-color: var(--error-red);
+    transform: scale(1.02);
+}
+
+.elements-grid.assembly-mode {
+    display: grid;
+}
+.disassembly-area.assembly-mode {
+    display: none;
+}
+.elements-grid.disassembly-mode {
+    display: grid;
+}
+.disassembly-area.disassembly-mode {
+    display: block;
+}
+
+.layer[draggable="true"] {
+    cursor: grab;
+}
+.layer[draggable="true"]:active {
+    cursor: grabbing;
+}
+.layer[draggable="true"]:hover {
+    filter: brightness(1.2);
+    transition: filter 0.1s ease;
+}
+.layer, img, .element-item {
+    -webkit-user-drag: none;
+    user-drag: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+img.drag-image {
+    pointer-events: none;
+    filter: drop-shadow(0 5px 20px rgba(0,0,0,0.9)) drop-shadow(0 0 20px rgba(255,255,255,0.6));
+}
+
+.astronaut-display.space-mode {
+    background: radial-gradient(circle at 30% 40%, #0a0f2a 0%, #03051a 100%) !important;
+}
+.astronaut-display.space-mode #layer-body {
+    display: none;
+}
+.astronaut-display.space-mode::before {
+    content: '';
+    position: absolute;
+    top: -200%;
+    left: 0;
+    width: 100%;
+    height: 300%;
+    background-image: 
+        radial-gradient(2px 2px at 10% 20%, white, rgba(0,0,0,0)),
+        radial-gradient(3px 3px at 30% 50%, white, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 60% 80%, white, rgba(0,0,0,0)),
+        radial-gradient(4px 4px at 80% 30%, white, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 45% 95%, white, rgba(0,0,0,0)),
+        radial-gradient(3px 3px at 90% 15%, white, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 15% 70%, white, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 70% 45%, white, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 40% 10%, white, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 20% 85%, white, rgba(0,0,0,0)),
+        radial-gradient(3px 3px at 50% 15%, white, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 75% 55%, white, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 95% 70%, white, rgba(0,0,0,0)),
+        radial-gradient(3px 3px at 5% 40%, white, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 35% 75%, white, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 65% 10%, white, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 25% 25%, white, rgba(0,0,0,0)),
+        radial-gradient(3px 3px at 85% 85%, white, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 55% 35%, white, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 15% 15%, white, rgba(0,0,0,0));
+    background-repeat: repeat;
+    background-size: 500px 500px;
+    opacity: 0.9;
+    pointer-events: none;
+    animation: starsFlowDown 8s linear infinite;
+    z-index: 0;
+}
+.astronaut-display.space-mode .layers-container {
+    position: relative;
+    z-index: 5;
+}
+.disassembly-area.disassembly-mode .disassembly-bin {
+    display: none;
+}
+.dressing-area.disassembly-can-drop {
+    border-color: rgba(46, 204, 113, 0.6) !important;
+    background: rgba(46, 204, 113, 0.05) !important;
+    box-shadow: inset 0 0 30px rgba(46, 204, 113, 0.08);
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+.disassembly-drop-hint {
+    display: none;
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 24px;
+    padding: 7px 18px;
+    color: var(--moon-gray);
+    font-size: clamp(0.8rem, 0.9vw, 0.95rem);
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 20;
+    backdrop-filter: blur(4px);
+}
+.dressing-area.disassembly-active .disassembly-drop-hint {
+    display: block;
+}
+.layer.temp-hidden {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0s;
+}
+.fall-copy {
+    position: fixed;
+    z-index: 10001;
+    pointer-events: none;
+    animation: fallAndFade 0.6s ease-out forwards !important;
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.9)) drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+}
+.dressing-area.disassembly-active {
+    flex: 0 0 60%;
+    max-width: 60%;
+}
+.dressing-area.disassembly-active + .right-panel {
+    flex: 0 0 38%;
+    max-width: 38%;
+}
+.inventory-area.disassembly-mode #element-info {
+    min-height: 150px !important;
+    max-height: 150px !important;
+    height: auto !important;
+}
+.astronaut-display.space-mode.stars-fast::before {
+    animation-duration: 2s !important;
+}
+.layer-spacecraft-zoom {
+    animation: zoomSpacecraft 0.8s ease-out forwards !important;
+    transform-origin: center center;
+}
+.layer-spacecraft-fly {
+    animation: flyUp 1.2s ease-out forwards !important;
+    transform-origin: center center;
+}
+#final-modal .modal-content {
+    max-width: 650px;
+    padding: 30px 25px;
+    border: 3px solid #2ecc71;
+    border-radius: 25px;
+    background: linear-gradient(135deg, #1a237e 0%, #0a1128 100%);
+    box-shadow: 0 0 20px rgba(46, 204, 113, 0.4);
+}
+#final-modal h2 {
+    font-size: 2.2rem !important;
+    margin: 0 0 15px 0 !important;
+    color: #2ecc71;
+    text-shadow: 0 0 5px rgba(46, 204, 113, 0.4), 0 0 10px rgba(46, 204, 113, 0.2);
+}
+#final-modal p {
+    font-size: 1.3rem !important;
+    margin-bottom: 10px;
+}
+#final-reset-btn {
+    background: rgba(46, 204, 113, 0.85);
+    border: 2px solid var(--success-green);
+}
+#final-reset-btn:hover {
+    background: var(--success-green);
+    transform: scale(1.02);
+}
+
+.dressing-area.disassembly-active + .right-panel .game-header {
+    padding: 18px 22px !important;
+}
+.dressing-area.disassembly-active + .right-panel .game-header h1 {
+    font-size: 2.5rem !important;
+    margin-bottom: 8px !important;
+}
+.dressing-area.disassembly-active + .right-panel .subtitle {
+    font-size: 1.5rem !important;
+    line-height: 1.3 !important;
+}
+.inventory-area.disassembly-mode .info-panel {
+    padding: 16px 24px !important;
+    margin-top: 0 !important;
+}
+.inventory-area.disassembly-mode .info-panel h3 {
+    margin-top: 0;
+    font-size: 1.8rem !important;
+    margin-bottom: 12px !important;
+}
+.inventory-area.disassembly-mode #element-info {
+    font-size: 1.4rem !important;
+    padding: 15px 22px !important;
+    min-height: 220px !important;
+    max-height: none !important;
+    height: auto !important;
+    line-height: 1.4 !important;
+}
+.inventory-area.disassembly-mode .element-error,
+.inventory-area.disassembly-mode .error-message {
+    font-size: 1.3rem !important;
+    padding: 12px 18px !important;
+}
+.inventory-area.disassembly-mode .progress-label {
+    font-size: 1.1rem !important;
+}
+
+.back-to-menu-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 10000;
+    background: rgba(108, 99, 255, 0.3);
+    backdrop-filter: blur(8px);
+    border: 2px solid rgba(108, 99, 255, 0.6);
+    color: white;
+    font-size: 1.5rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+.back-to-menu-btn:hover {
+    background: var(--cosmic-purple);
+    transform: scale(1.05);
+    border-color: white;
+}
+.completion-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+.completion-buttons button {
+    min-width: 250px;
+    padding: 15px 20px;
+    font-size: 1.2rem;
+    border-radius: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    color: white;
+}
+.final-reset-btn {
+    background: rgba(46, 204, 113, 0.85);
+    border: 2px solid var(--success-green);
+}
+.final-reset-btn:hover {
+    background: var(--success-green);
+    transform: scale(1.02);
+}
+.back-to-menu-complete {
+    background: var(--cosmic-purple);
+    border: 2px solid rgba(108, 99, 255, 0.6);
+}
+.back-to-menu-complete:hover {
+    background: #5a52d5;
+    transform: scale(1.02);
+}
+.right-panel,
+.dressing-area,
+.game-header,
+.inventory-area,
+.info-panel {
+    animation: fadeInUp 0.5s ease-out backwards;
+}
+.game-header { animation-delay: 0s; }
+.inventory-area { animation-delay: 0.1s; }
+.info-panel { animation-delay: 0.2s; }
+.dressing-area { animation: fadeInLeft 0.5s ease-out 0.05s backwards; }
+.modal {
+    animation: fadeInUp 0.3s ease-out;
+}
+.modal.hidden {
+    display: none;
+}
+
+@media (min-width: 1200px) and (max-height: 800px) {
+    :root {
+        --tv-k: 0.84;
+        --scale: clamp(0.82, calc(var(--ui-scale) * var(--tv-k)), 1.06);
+        --w: clamp(100px, calc(150px * var(--scale)), 180px);
+        --h: clamp(180px, calc(250px * var(--scale)), 300px);
+        --img: clamp(100px, calc(140px * var(--scale)), 170px);
+        --gap: clamp(4px, calc(11px * var(--scale)), 10px);
+        --info-h: clamp(68px, calc(98px * var(--scale)), 102px);
+        --progress-h: clamp(6px, calc(12px * var(--scale)), 10px);
+        --card-scale: clamp(0.82, var(--scale), 1.35);
+    }
+    .element-item {
+        justify-content: flex-start;
+        padding-bottom: 12px;
+    }
+    .element-name {
+        position: absolute;
+        bottom: 12px;
+        left: 0;
+        right: 0;
+        margin-top: 0;
+        background: transparent;
+        padding-top: 6px;
+        font-size: clamp(0.85rem, calc(1.05rem * var(--scale)), 1.2rem);
+        display: block;
+    }
+    .element-item[data-id="central"] .element-img {
+        transform: scale(calc(3.7 * var(--card-scale)));
+        margin: calc(-25px * var(--card-scale)) 0 calc(-50px * var(--card-scale)) 0;
+    }
+    .element-item[data-id="boostersLeft"] .element-img {
+        margin: -70px 0 0 30px;
+    }
+    .element-item[data-id="boostersRight"] .element-img {
+        margin: -70px 0 0 -30px;
+    }
+    .element-item[data-id="upperStage"] .element-img {
+        margin: 155px;
+    }
+    .element-item[data-id="sasLower"] .element-img {
+        margin: 270px; 
+    }
+    .element-item[data-id="sasUpper"] .element-img {
+        margin: 460px;
+    }
+    .drag-image[alt="central"].visible {
+        transform: translate(0, -80px);
+    }
+    .drag-image[alt="boostersLeft"].visible {
+        transform: translate(12px, -110px);
+    }
+    .drag-image[alt="boostersRight"].visible {
+        transform: translate(-12px, -110px);
+    }
+    .drag-image[alt="upperStage"].visible {
+        transform: translate(0px, 60px);
+    }
+    .drag-image[alt="sasLower"].visible {
+        transform: translate(0px, 100px);
+    }
+    .drag-image[alt="sasUpper"].visible {
+        transform: translate(0px, 120px);
+    }
+    body {
+        overflow: hidden;
+    }
+    .game-container {
+        height: 100dvh;
+        padding: clamp(8px, 1.2vw, 16px);
+    }
+    .main-layout {
+        height: calc(100dvh - clamp(16px, 2.6vw, 32px));
+        gap: clamp(10px, 1.2vw, 18px);
+    }
+    .dressing-area {
+        flex: 0 0 calc(38% - (clamp(10px, 1.2vw, 18px) * 0.5));
+        max-width: calc(38% - (clamp(10px, 1.2vw, 18px) * 0.5));
+        min-width: 0;
+        min-height: 100%;
+        align-self: stretch;
+    }
+    .astronaut-display {
+        min-height: 0;
+        height: 100%;
+        padding: 6px;
+    }
+    .right-panel {
+        flex: 1 1 0;
+        max-width: none;
+        min-width: 0;
+        gap: clamp(8px, calc(10px * var(--tv-k)), 12px);
+    }
+    .game-header {
+        padding: clamp(7px, calc(10px * var(--tv-k)), 11px) clamp(10px, calc(16px * var(--tv-k)), 16px);
+    }
+    .header-content {
+        gap: clamp(3px, calc(5px * var(--tv-k)), 5px);
+    }
+    .game-header h1 {
+        margin-bottom: 2px;
+        font-size: clamp(1rem, calc(1.55rem * var(--scale)), 1.45rem);
+    }
+    .subtitle {
+        line-height: 1.2;
+        font-size: clamp(0.78rem, calc(0.98rem * var(--scale)), 0.95rem);
+    }
+    .inventory-area {
+        display: flex;
+        flex-direction: column;
+        gap: clamp(6px, calc(8px * var(--tv-k)), 8px);
+        min-height: 0;
+        flex: 1 1 auto;
+    }
+    .inventory-area h2 {
+        font-size: clamp(1rem, calc(1.55rem * var(--scale)), 1.45rem);
+        margin-top: 0;
+        margin-bottom: 5px;
+    }
+    .info-panel {
+        flex: 0 0 auto;
+        padding: clamp(7px, calc(10px * var(--tv-k)), 11px) clamp(10px, calc(14px * var(--tv-k)), 14px);
+        border-radius: 8px;
+    }
+    .info-panel h3 {
+        margin-bottom: clamp(4px, calc(8px * var(--tv-k)), 8px);
+        font-size: clamp(0.7rem, calc(1.1rem * var(--scale)), 1.2rem);
+    }
+    .info-content {
+        gap: clamp(6px, calc(10px * var(--tv-k)), 10px);
+    }
+    #element-info {
+        min-height: var(--info-h);
+        height: var(--info-h);
+        max-height: var(--info-h);
+        padding: clamp(7px, calc(11px * var(--tv-k)), 11px) clamp(9px, calc(16px * var(--tv-k)), 16px);
+        line-height: 1.5;
+        overflow-y: auto;
+        font-size: clamp(0.94rem, calc(1.1rem * var(--scale)), 1.2rem);
+    }
+    .element-error {
+        font-size: clamp(0.85rem, calc(1.1rem * var(--scale)), 1.2rem);
+    }
+    .error-message {
+        font-size: clamp(0.85rem, calc(1.1rem * var(--scale)), 1.2rem);
+        line-height: 1.4;
+    }
+    .progress-container {
+        padding: clamp(5px, calc(10px * var(--tv-k)), 10px) clamp(8px, calc(12px * var(--tv-k)), 12px);
+    }
+    .progress-label {
+        margin-bottom: 4px;
+        font-size: 0.75rem;
+    }
+    .element-item {
+        padding: clamp(4px, calc(6px * var(--scale)), 8px) clamp(4px, calc(6px * var(--scale)), 8px) 12px;
+    }
+    .modal-content {
+        max-width: 800px !important;  
+        width: 40% !important;   
+        padding: 20px !important;      
+    }
+    .modal-content img {
+        margin-bottom: -8px;
+    }
+    .modal-content h2 {
+        font-size: 1.5rem !important;
+        margin-bottom: 8px !important;
+    }
+    .modal-content p {
+        font-size: 1.2rem !important;
+        margin-bottom: 0px !important;
+    }
+    .modal-content button,
+    .modal-content .reset-btn {
+        font-size: 1.1rem !important;
+        padding: 9px !important;
+    }
+    #final-modal .modal-content {
+        max-width: 900px !important;
+        width: 47% !important;
+        padding: 30px !important;
+    }
+    #final-modal h2 {
+        font-size: 2rem !important;
+    }
+    #final-modal p {
+        font-size: 1.2rem !important;
+    }
+    .completion-buttons #final-reset-btn,
+    .completion-buttons .back-to-menu-complete {
+        font-size: 1.2rem !important;
+        font-weight: bold !important;
+        padding: 15px 20px !important;
+        min-width: 230px !important;
+    }
+    .inventory-area.disassembly-mode {
+        gap: 6px !important;
+        margin-top: 0 !important;;
+    }
+    .inventory-area.disassembly-mode .info-panel {
+        padding: 14px 20px !important;
+    }
+    .inventory-area.disassembly-mode .info-panel h3 {
+        font-size: 1.2rem !important;
+        margin-bottom: 14px !important;
+    }
+    .inventory-area.disassembly-mode #element-info {
+        min-height: 160px !important;
+        font-size: 1.05rem !important;
+        padding: 14px !important;
+        height: auto !important;
+        max-height: none !important;
+    }
+    .inventory-area.disassembly-mode .element-error,
+    .inventory-area.disassembly-mode .error-message {
+        font-size: 1rem !important;
+    }
+    .inventory-area.disassembly-mode .progress-container {
+        padding: 12px !important;
+    }
+    .inventory-area.disassembly-mode .progress-label {
+        font-size: 0.9rem !important;
+    }
+    .dressing-area.disassembly-active + .right-panel .game-header {
+        padding: 16px 24px !important;
+    }
+    .dressing-area.disassembly-active + .right-panel .game-header h1 {
+        font-size: 1.6rem !important;
+        margin-bottom: 6px !important;
+    }
+    .dressing-area.disassembly-active + .right-panel .subtitle {
+        font-size: 1rem !important;
+        line-height: 1.3;
+    }
+    
+    @keyframes zoomSpacecraftTV {
+        0% { transform: scale(1) translate(0, 0); opacity: 1; }
+        100% { transform: scale(3) translate(0, 140px); opacity: 1; }  
+    }
+    .layer-spacecraft-zoom {
+        animation: zoomSpacecraftTV 0.8s ease-out forwards !important;
+    }
+    @keyframes flyUpTV {
+        0% { transform: scale(3) translate(0, 140px); opacity: 1; }
+        100% { transform: scale(0.8) translate(0, -200%); opacity: 0; }
+    }
+    .layer-spacecraft-fly {
+        animation: flyUpTV 4s ease-out forwards !important;
+    }
+}
+
+@media (min-width: 1280px) and (max-width: 1599px) and (min-height: 600px) {
+    :root {
+        --w: clamp(160px, calc(185px * var(--scale)), 225px);
+        --h: clamp(180px, calc(235px * var(--scale)), 300px);
+        --img: clamp(130px, calc(160px * var(--scale)), 190px);
+        --gap: clamp(12px, calc(20px * var(--scale)), 28px);
+        --info-h: clamp(100px, calc(125px * var(--scale)), 155px);
+        --progress-h: clamp(10px, calc(14px * var(--scale)), 18px);
+    }
+
+    .element-item {
+        padding: clamp(12px, calc(18px * var(--scale)), 24px);
+        gap: 12px;
+    }
+
+    .inventory-area {
+        gap: 12px;
+    }
+    .inventory-area h2 {
+        margin-bottom: 0;
+        font-size: clamp(1.6rem, calc(2.0rem * var(--scale)), 2.4rem);
+    }
+
+    .element-item[data-id="central"] .element-img {
+        transform: scale(calc(4.3 * var(--card-scale)));
+        margin: calc(-50px * var(--card-scale)) 0 calc(-100px * var(--card-scale)) 0;
+    }
+    .element-item[data-id="boostersLeft"] .element-img {
+        transform: scale(calc(5.0 * var(--card-scale)));
+        margin: calc(-110px * var(--card-scale)) 0 calc(100px * var(--card-scale)) calc(45px * var(--card-scale));
+    }
+    .element-item[data-id="boostersRight"] .element-img {
+        margin: calc(-110px * var(--card-scale)) 0 calc(100px * var(--card-scale)) calc(-45px * var(--card-scale));
+    }
+    .element-item[data-id="upperStage"] .element-img {
+        margin: calc(205px * var(--card-scale)) 0 calc(-100px * var(--card-scale)) 0;
+    }
+    .element-item[data-id="sasLower"] .element-img {
+        transform: scale(calc(9.0 * var(--card-scale)));
+        margin: calc(365px * var(--card-scale)) 0 calc(-280px * var(--card-scale)) 0;
+    }
+    .element-item[data-id="sasUpper"] .element-img {
+        transform: scale(calc(11.0 * var(--card-scale)));
+        margin: calc(630px * var(--card-scale)) 0 calc(-540px * var(--card-scale)) 0;
+    }
+
+    .game-header {
+        padding: clamp(14px, calc(20px * var(--scale)), 26px) clamp(18px, calc(26px * var(--scale)), 34px);
+    }
+    .game-header h1 {
+        font-size: clamp(1.8rem, calc(2.2rem * var(--scale)), 2.8rem);
+        margin-bottom: 8px;
+    }
+    .subtitle {
+        font-size: clamp(1.1rem, calc(1.3rem * var(--scale)), 1.6rem);
+    }
+
+    .drag-image[alt="central"].visible {
+        transform: translate(0, -100px);
+    }
+    .drag-image[alt="boostersLeft"].visible {
+        transform: translate(12px, -135px);
+    }
+    .drag-image[alt="boostersRight"].visible {
+        transform: translate(-12px, -135px);
+    }
+    .drag-image[alt="upperStage"].visible {
+        transform: translate(0px, 75px);
+    }
+    .drag-image[alt="sasLower"].visible {
+        transform: translate(0px, 130px);
+    }
+    .drag-image[alt="sasUpper"].visible {
+        transform: translate(0px, 150px);
+    }
+
+    .info-panel {
+        padding: clamp(6px, calc(10px * var(--scale)), 16px) clamp(12px, calc(18px * var(--scale)), 24px);
+    }
+    .info-panel h3 {
+        font-size: clamp(1.2rem, calc(1.4rem * var(--scale)), 1.7rem);
+        margin-bottom: 10px;
+    }
+    #element-info {
+        font-size: clamp(1.1rem, calc(1.3rem * var(--scale)), 1.5rem);
+        padding: clamp(8px, calc(12px * var(--scale)), 16px) clamp(15px, calc(20px * var(--scale)), 25px);
+        min-height: var(--info-h);
+    }
+    .element-description strong {
+        font-size: 1em;
+    }
+    .element-details {
+        font-size: 0.94em;
+    }
+    .element-error,
+    .error-message {
+        font-size: clamp(1.1rem, calc(1.3rem * var(--scale)), 1.5rem) !important;
+        padding: 12px 18px !important;
+    }
+    .progress-label {
+        font-size: clamp(0.9rem, calc(1.1rem * var(--scale)), 1.3rem);
+    }
+    .progress-container {
+        padding: clamp(8px, calc(12px * var(--scale)), 16px) clamp(15px, calc(20px * var(--scale)), 25px);
+    }
+
+    .modal-content {
+        max-width: 650px !important;
+        width: 70% !important;
+    }
+
+    .modal-content .reset-btn {
+        padding: 14px 28px !important;
+    }
+
+    .right-panel.disassembly-mode .game-header {
+        padding: 16px 24px !important;
+    }
+    .right-panel.disassembly-mode .game-header h1 {
+        font-size: 2.0rem !important;
+        margin-bottom: 8px !important;
+    }
+    .right-panel.disassembly-mode .subtitle {
+        font-size: 1.3rem !important;
+        line-height: 1.3 !important;
+    }
+
+    .right-panel.disassembly-mode .info-panel {
+        padding: 18px 26px !important;
+    }
+    .right-panel.disassembly-mode .info-panel h3 {
+        font-size: 1.5rem !important;
+        margin-bottom: 12px !important;
+    }
+    .right-panel.disassembly-mode #element-info {
+        font-size: 1.3rem !important;
+        padding: 14px 20px !important;
+        min-height: 190px !important;
+        height: auto !important;
+        max-height: none !important;
+        line-height: 1.4 !important;
+    }
+    .right-panel.disassembly-mode .element-error,
+    .right-panel.disassembly-mode .error-message {
+        font-size: 1.2rem !important;
+        padding: 10px 16px !important;
+    }
+    .right-panel.disassembly-mode .progress-label {
+        font-size: 1.1rem !important;
+    }
+    .right-panel.disassembly-mode .progress-container {
+        padding: 12px 18px !important;
+    }
+
+    .right-panel.disassembly-mode {
+        gap: 2px !important;
+    }
+
+    .dressing-area.disassembly-active + .right-panel .game-header {
+        padding: 16px 24px !important;
+    }
+    .dressing-area.disassembly-active + .right-panel .game-header h1 {
+        font-size: 2.0rem !important;
+        margin-bottom: 8px !important;
+    }
+    .dressing-area.disassembly-active + .right-panel .subtitle {
+        font-size: 1.3rem !important;
+        line-height: 1.3 !important;
+    }
+
+    @keyframes zoomSpacecraftTV {
+        0% { transform: scale(1) translate(0, 0); opacity: 1; }
+        100% { transform: scale(3) translate(0, 170px); opacity: 1; }  
+    }
+    .layer-spacecraft-zoom {
+        animation: zoomSpacecraftTV 0.8s ease-out forwards !important;
+    }
+    @keyframes flyUpTV {
+        0% { transform: scale(3) translate(0, 170px); opacity: 1; }
+        100% { transform: scale(0.8) translate(0, -200%); opacity: 0; }
+    }
+    .layer-spacecraft-fly {
+        animation: flyUpTV 4s ease-out forwards !important;
+    }
+
+    #final-modal .modal-content {
+        max-width: 610px !important;
+        width: 80% !important;
+    }
+
+}

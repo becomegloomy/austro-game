@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Угадай спутник</title>
+    <link rel="icon" type="image/png" href="images/icon-satellite.png">
+    
+    <link rel="stylesheet" href="../common/common.css">
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="../common/common.js" defer></script>
+    
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <button class="back-to-menu-btn" id="backToMenuBtn" title="Вернуться в меню">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+
+    <div class="game-container">
+        <div class="main-layout">
+            <div class="space-scene" id="spaceScene">
+                <canvas id="satelliteCanvas"></canvas>
+                <canvas id="previewCanvas"></canvas>
+            </div>
+            <div class="right-panel">
+                <div class="game-header">
+                    <h1><i class="fas fa-satellite"></i> НАЙДИ, ГДЕ РАБОТАЕТ СПУТНИК</h1>
+                    <div class="subtitle">Рассмотри спутник и угадай его миссию</div>
+                </div>
+
+                <div class="mission-panel">
+                    <h2>ВЫБЕРИ МИССИЮ</h2>
+                    <div class="missions-grid" id="missionsGrid"></div>
+                    <button class="btn-mission btn-next" id="nextSatelliteBtn" disabled><i class="fas fa-arrow-right"></i> СЛЕДУЮЩИЙ СПУТНИК</button>
+                    <button class="btn-mission btn-reset" id="resetBtn" style="display: none;"><i class="fas fa-redo-alt"></i> НОВАЯ ИГРА</button>
+                </div>
+
+                <div class="info-panel">
+                    <div class="info-header">
+                        <h3><i class="fas fa-newspaper"></i> ИНТЕРЕСНЫЙ ФАКТ</h3>
+                        <button id="hintButton" class="hint-button" title="Показать более подробную подсказку"><i class="fas fa-lightbulb"></i> Подсказка</button>
+                    </div>
+                    <div class="fact-text" id="factDisplay">🌠 Нажми на миссию, чтобы проверить догадку.</div>
+                    <div class="progress-stars" id="progressStars"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="completion-overlay hidden" id="completionOverlay"></div>
+    <div class="completion-message hidden" id="completionMessage">
+        <h2><i class="fas fa-trophy"></i> ПОБЕДА!</h2>
+        <p>Вы стали настоящим знатоком космических аппаратов</p>
+        <div class="completion-stars">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+        </div>
+        <div class="completion-buttons">
+            <button id="completionResetBtn" class="completion-reset-btn"><i class="fas fa-redo-alt"></i> НАЧАТЬ СНАЧАЛА</button>
+            <button id="backToMenuFromComplete" class="back-to-menu-complete"><i class="fas fa-arrow-left"></i> НАЗАД В МЕНЮ</button>
+        </div>
+    </div>
+</body>
+</html>
